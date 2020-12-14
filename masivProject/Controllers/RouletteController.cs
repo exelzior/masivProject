@@ -12,34 +12,36 @@ namespace masivProject.Controllers
 {
     public class RouletteController : ApiController
     {
-        RouletteBusinessLogic rouletteLogic = new RouletteBusinessLogic();
+        readonly RouletteBusinessLogic  rouletteLogic = new RouletteBusinessLogic();
         [HttpGet]
-        public async Task<List<Roulette>> ListRoulettes()
+        [ActionName("ListCurrentRoulettes")]
+        public async Task<List<Roulette>> ListCurrentRoulettes()
         {
-            return await rouletteLogic.GetRoulettes();
+            return await rouletteLogic.GetRoulettesFromCache();
         }
         [HttpGet]
-        public async Task<Guid>  NewRouletteCreation()
+        [ActionName("NewRouletteCreation")]
+        public async Task<JsonHttpStatusResult>  NewRouletteCreation()
         {
-            Roulette roulette = new Roulette
-            {
-                Id = Guid.NewGuid(), Status = RouletteEnum.RouletteStatus.Created
-            };
-            rouletteLogic.CreateRoulette(roulette);
-            return roulette.Id;
+            return await rouletteLogic.CreateNewRoulette();
         }
         [HttpPost]
-        public async Task<bool> NewBetRegistration([FromBody] IncomeBet betRequest, [FromUri] int idUser)
+        [ActionName("OpenRouletteOperation")]
+        public async Task<JsonHttpStatusResult> OpenRouletteOperation([FromBody] Roulette rouletteSearch)
         {
-            List<Roulette> roulettes = await rouletteLogic.GetRoulettes();
-            Roulette roulette = roulettes.FirstOrDefault(a => a.Id == betRequest.RouletteId);
-            if(roulette.RouletteBets == null)
-                roulette.RouletteBets = new List<Bet>();
-            roulette.RouletteBets.Add(betRequest.NewBet);
-            rouletteLogic.NewBet(roulette);
-            return false;
+            return await rouletteLogic.OpenRouletteOperation(rouletteSearch);
         }
-
- 
+        [HttpPost]
+        [ActionName("NewBetRegistration")]
+        public async Task<JsonHttpStatusResult> NewBetRegistration([FromBody] IncomeBet betRequest, [FromUri] int idUser)
+        {
+            return await rouletteLogic.NewBet(betRequest);
+        }
+        [HttpPost]
+        [ActionName("CloseRouletteOperation")]
+        public async Task<JsonHttpStatusResult> CloseRouletteOperation([FromBody] Roulette rouletteSearch)
+        {
+            return await rouletteLogic.CloseRouletteOperation(rouletteSearch);
+        }
     }
 }

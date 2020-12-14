@@ -169,10 +169,14 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Bet.cs" />
+    <Compile Include="Models\BetStatusEnum.cs" />
+    <Compile Include="Models\CloseRouletteList.cs" />
     <Compile Include="Models\IncomeBet.cs" />
+    <Compile Include="Models\JsonHttpStatusResult.cs" />
     <Compile Include="Models\Roulette.cs" />
     <Compile Include="Models\RouletteBusinessLogic.cs" />
     <Compile Include="Models\RouletteEnum.cs" />
+    <Compile Include="Models\Winner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
